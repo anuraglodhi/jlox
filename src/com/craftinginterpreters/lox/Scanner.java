@@ -44,6 +44,7 @@ public class Scanner {
             case '+' -> addToken(PLUS);
             case ';' -> addToken(SEMICOLON);
             case '*' -> addToken(STAR);
+
             case '!' -> addToken(match('=') ? BANG_EQUAL : BANG);
             case '=' -> addToken(match('=') ? EQUAL_EQUAL : EQUAL);
             case '<' -> addToken(match('=') ? LESS_EQUAL : LESS);
@@ -56,10 +57,31 @@ public class Scanner {
                     addToken(SLASH);
                 }
             }
+
             case ' ', '\r', '\t' -> {}
             case '\n' -> line++;
+
+            case '"' -> string();
+
             default -> Lox.error(line, "Unexpected character.");
         }
+    }
+
+    private void string() {
+        while (peek() != '"' && !isAtEnd()) {
+            if (peek() == '\n') line++;
+            advance();
+        }
+
+        if (isAtEnd()) {
+            Lox.error(line, "Unterminated string.");
+            return;
+        }
+
+        advance(); // For closing ".
+
+        String value = source.substring(start + 1, current + 1);
+        addToken(STRING, value);
     }
 
     private boolean match(char expected) {
