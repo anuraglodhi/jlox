@@ -66,7 +66,7 @@ public class GenerateAst {
         String[] fields = fieldList.split(", ");
         for (String field: fields) {
             String name = field.split(" ")[1];
-            writer.println("            this." + name + "=" + name + ";");
+            writer.println("            this." + name + " = " + name + ";");
         }
 
         writer.println("        }");
